@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Adaptions &mdash; Real-life compute cluster workflows - Parallelization  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_lesson.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/term_role_formatting.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_rtd_theme_ext_color_contrast.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+
+  
+    <link rel="shortcut icon" href="../../_static/coderefinery.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script src="../../_static/minipres.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+    <link rel="next" title="Parallelize using Slurm Array jobs" href="../array_jobs/" />
+    <link rel="prev" title="Concepts" href="../concepts/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../" class="icon icon-home">
+            Real-life compute cluster workflows - Parallelization
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The lesson</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../motivation/">Motivation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../">Embarassingly Parallel Problems</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../motivation/">Motivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/">Concepts</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Code Adaptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#updating-the-code-to-obtain-input-parameters">Updating the code to obtain input parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collection-script">Collection script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-1">Exercise 1</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../array_jobs/">Parallelize using Slurm Array jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submission_by_script/">Parallelize via a script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conclusions/">Conclusions and recommendations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../pitfalls/">Pitfalls when parallelising code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../conclusions/">Conclusions and recommendations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructor-guide/">Instructor’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exercises/">List of exercises</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../">Real-life compute cluster workflows - Parallelization</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../">Embarassingly Parallel Problems</a></li>
+      <li class="breadcrumb-item active">Code Adaptions</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/coderefinery/content/blob/main/content/parallelization/code_adaptions.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="code-adaptions">
+<h1>Code Adaptions<a class="headerlink" href="#code-adaptions" title="Permalink to this heading"></a></h1>
+<p>Even in an embarassingly parallel situation we will have to make a couple of adaptions to the code
+in order to be able to run parallel executions of our code.</p>
+<section id="updating-the-code-to-obtain-input-parameters">
+<h2>Updating the code to obtain input parameters<a class="headerlink" href="#updating-the-code-to-obtain-input-parameters" title="Permalink to this heading"></a></h2>
+<p>First off, we will need to allow the programm to receive input parameters that define which element(s)
+of the data have to be computed by this instance.</p>
+<p>So from this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">load_and_preprocess_data</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="n">n</span> <span class="n">do</span><span class="p">:</span>
+   <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="n">save</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p>We need to create something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">input_arg</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_and_preprocess_data</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">calculate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">save</span> <span class="n">res</span> <span class="k">as</span> <span class="n">res_i</span>
+</pre></div>
+</div>
+</section>
+<section id="collection-script">
+<h2>Collection script<a class="headerlink" href="#collection-script" title="Permalink to this heading"></a></h2>
+<p>Since we are now producing multiple individual results, we will have to collect them and put them together
+into our actual result. This highly depends on your result data, but in general it will take the form of</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="p">[]</span> <span class="n">of</span> <span class="n">length</span> <span class="n">n</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">3.</span><span class="o">..</span><span class="n">n</span> <span class="n">do</span><span class="p">:</span>
+   <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">res_i</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="exercise-1">
+<h2>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this heading"></a></h2>
+<div class="admonition-parallel-1-make-the-script-accept-an-input-index exercise important admonition" id="exercise-0">
+<p class="admonition-title">Parallel-1: Make the script accept an input index</p>
+<p>Our example is a very simple code which extracts cities for a country from a list of
+cities with their countries and writes a list of these cities.
+The data for the cities for this example are provided in the <a class="reference download internal" download="" href="../../_downloads/9a48f96384d077c3ea9b6bf21172d1a3/cities.csv"><code class="xref download docutils literal notranslate"><span class="pre">cities.csv</span></code></a> file.
+The code itself is provided <a class="reference download internal" download="" href="../../_downloads/a90242cc966821c9db4868b8720f44f0/long_code.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="c1"># Load the city data</span>
+<span class="k">def</span> <span class="nf">load_cities</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">cities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">countries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="n">cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">countries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">cities</span><span class="p">,</span> <span class="n">countries</span>
+
+
+<span class="c1"># We will assume, that this function is runnning for a  long time.</span>
+<span class="k">def</span> <span class="nf">solve_long_problem</span><span class="p">(</span><span class="n">cities</span><span class="p">,</span> <span class="n">countries</span><span class="p">,</span> <span class="n">targetcountry</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>  <span class="c1"># simulate a runtime of a minute</span>
+    <span class="n">country_cities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">countries</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">countries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">targetcountry</span><span class="p">:</span>
+            <span class="n">country_cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">country_cities</span>
+
+
+<span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;cities.csv&quot;</span>  <span class="c1"># Update with your actual file path</span>
+<span class="n">cities</span><span class="p">,</span> <span class="n">countries</span> <span class="o">=</span> <span class="n">load_cities</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+<span class="c1"># set will make the countries unique</span>
+<span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">countries</span><span class="p">):</span>
+    <span class="c1"># get the cities for this country</span>
+    <span class="n">current_cities</span> <span class="o">=</span> <span class="n">solve_long_problem</span><span class="p">(</span><span class="n">cities</span><span class="p">,</span> <span class="n">countries</span><span class="p">,</span> <span class="n">country</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">country</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_cities</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Adapt the code, such that it takes an integer input and generates one country list
+for each integer input. In this instance, the order of execution is not important
+as one list per country will be produced.</p>
+</div>
+<div class="admonition-solution-parallel-1 solution important dropdown admonition" id="solution-0">
+<p class="admonition-title">Solution: Parallel-1</p>
+<p>The simplest solution is to use <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code> taking in the first argument and converting
+it to an integer. You can also use more elaborate input parsers (see for example
+<a class="reference external" href="https://aaltoscicomp.github.io/python-for-scicomp/scripts/#parsing-command-line-arguments-with-argparse">this lecture about argument parsing</a>)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="c1"># Load the city data</span>
+<span class="k">def</span> <span class="nf">load_cities</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">cities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">countries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="n">cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">countries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">cities</span><span class="p">,</span> <span class="n">countries</span>
+
+
+<span class="c1"># We will assume, that this function is runnning for a  long time.</span>
+<span class="k">def</span> <span class="nf">solve_long_problem</span><span class="p">(</span><span class="n">cities</span><span class="p">,</span> <span class="n">countries</span><span class="p">,</span> <span class="n">targetcountry</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>  <span class="c1"># simulate a runtime of a minute</span>
+    <span class="n">country_cities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">countries</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">countries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">targetcountry</span><span class="p">:</span>
+            <span class="n">country_cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">country_cities</span>
+
+
+<span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;cities.csv&quot;</span>  <span class="c1"># Update with your actual file path</span>
+<span class="n">cities</span><span class="p">,</span> <span class="n">countries</span> <span class="o">=</span> <span class="n">load_cities</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+<span class="hll"><span class="n">unique_countries</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">countries</span><span class="p">))</span>
+</span><span class="hll"><span class="n">unique_countries</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</span><span class="hll"><span class="n">country</span> <span class="o">=</span> <span class="n">unique_countries</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+</span><span class="hll"><span class="c1"># set will make the countries unique</span>
+</span><span class="hll"><span class="c1"># get the cities for this country</span>
+</span><span class="hll"><span class="n">current_cities</span> <span class="o">=</span> <span class="n">solve_long_problem</span><span class="p">(</span><span class="n">cities</span><span class="p">,</span> <span class="n">countries</span><span class="p">,</span> <span class="n">country</span><span class="p">)</span>
+</span><span class="hll"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">country</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span class="hll">    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_cities</span><span class="p">))</span>
+</span></pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../concepts/" class="btn btn-neutral float-left" title="Concepts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../array_jobs/" class="btn btn-neutral float-right" title="Parallelize using Slurm Array jobs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

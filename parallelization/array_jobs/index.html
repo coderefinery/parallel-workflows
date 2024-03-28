@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallelize using Slurm Array jobs &mdash; Real-life compute cluster workflows - Parallelization  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_lesson.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/term_role_formatting.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_rtd_theme_ext_color_contrast.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+
+  
+    <link rel="shortcut icon" href="../../_static/coderefinery.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script src="../../_static/minipres.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+    <link rel="next" title="Parallelize via a script" href="../submission_by_script/" />
+    <link rel="prev" title="Code Adaptions" href="../code_adaptions/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../" class="icon icon-home">
+            Real-life compute cluster workflows - Parallelization
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The lesson</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../motivation/">Motivation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../">Embarassingly Parallel Problems</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../motivation/">Motivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code_adaptions/">Code Adaptions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Parallelize using Slurm Array jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-1">Exercise 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#more-complex-submission-scripts">More complex submission scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../submission_by_script/">Parallelize via a script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conclusions/">Conclusions and recommendations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../pitfalls/">Pitfalls when parallelising code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../conclusions/">Conclusions and recommendations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructor-guide/">Instructor’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exercises/">List of exercises</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../">Real-life compute cluster workflows - Parallelization</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../">Embarassingly Parallel Problems</a></li>
+      <li class="breadcrumb-item active">Parallelize using Slurm Array jobs</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/coderefinery/content/blob/main/content/parallelization/array_jobs.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parallelize-using-slurm-array-jobs">
+<h1>Parallelize using Slurm Array jobs<a class="headerlink" href="#parallelize-using-slurm-array-jobs" title="Permalink to this heading"></a></h1>
+<p>Slurm array jobs are jobs, that are run multiple times, with the same settings.
+a slurm batch script with an array job looks something like:</p>
+<div class="highlight-slurm notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="kp">#SBATCH --job-name=my_array_job</span>
+<span class="kp">#SBATCH --array=2-100:2</span>
+<span class="kp">#SBATCH --output=output_%A_%a.txt</span>
+<span class="kp">#SBATCH --error=error_%A_%a.txt</span>
+
+<span class="c1"># Your job commands go here</span>
+<span class="c1"># You can use the environment variable SLURM_ARRAY_TASK_ID to get the current task ID</span>
+<span class="c1"># load whatever modules or environments you need before running your actual command</span>
+
+<span class="c1"># Example command: replace with your actual command</span>
+your_command<span class="w"> </span>--parameter<span class="w"> </span><span class="nv">$SLURM_ARRAY_TASK_ID</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">--array=2-100:2</span></code> creates 50 jobs numbered from 2 to 100 with a step size of 2
+(the step size defaults to 1 if omitted). <code class="docutils literal notranslate"><span class="pre">%A</span></code> and <code class="docutils literal notranslate"><span class="pre">%a</span></code> in output and error indicate
+the jobID and arrayID of the job respectively. The only difference in these jobs is the
+environment variable <code class="docutils literal notranslate"><span class="pre">SLURM_ARRAY_TASK_ID</span></code> which is set to the array id of the job
+and can be used to select what to calculate in this job.</p>
+<p>We can use this variable to tell our program which element to use in this job, done in the above example by passing the <code class="docutils literal notranslate"><span class="pre">$SLURM_ARRAY_TASK_ID</span></code> as the parameter argument for the
+program we run.</p>
+<section id="exercise-1">
+<h2>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this heading"></a></h2>
+<div class="admonition-parallel-2-create-a-slurm-script-and-run-it exercise important admonition" id="exercise-0">
+<p class="admonition-title">Parallel-2: Create a slurm script and run it.</p>
+<p>For our example we will need to adapt the above script a bit.
+First, we will need to run it for only four different values, as we only have four different
+countries. Second, we need to start our array at 0 since python uses zero-based indexing
+or we will need to adapt our code to change this.</p>
+<p>Finally, we don’t have any argument parsing, but need to provide the input parameter directly to the script as in <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">long_code.py</span> <span class="pre">1</span></code></p>
+<p>Build the sbatch script that we need to run the code for our 4 countries and run it on your cluster</p>
+</div>
+<div class="admonition-solution-parallel-2 solution important dropdown admonition" id="solution-0">
+<p class="admonition-title">Solution: Parallel-2</p>
+<p>Here is a script that should be able to run on your cluster:</p>
+<div class="highlight-slurm notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="kp">#SBATCH --job-name=long_job</span>
+<span class="kp">#SBATCH --array=0-3</span>
+<span class="kp">#SBATCH --output=output_%A_%a.txt</span>
+<span class="kp">#SBATCH --error=error_%A_%a.txt</span>
+
+<span class="c1"># We assume, that python3 runs out of the box on your cluster, if not, you will have to</span>
+<span class="c1"># add a command here that makes the python3 command available on your cluster</span>
+
+<span class="c1"># Example command: replace with your actual command</span>
+python3<span class="w"> </span>long_code.py<span class="w"> </span><span class="nv">$SLURM_ARRAY_TASK_ID</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="more-complex-submission-scripts">
+<h2>More complex submission scripts<a class="headerlink" href="#more-complex-submission-scripts" title="Permalink to this heading"></a></h2>
+<p>In many instances it is necessary to use parameters that are not simple integers, as
+provided by <code class="docutils literal notranslate"><span class="pre">$SLURM_ARRAY_TASK_ID</span></code> or use multiple input parameters. To do this, you can
+either adapt your code or generate more complex logic within the batch submission script
+using bash commands. We will not go into the details of bash programming here, but if you
+are familiar this can be a convenient way to achieve more complex input parameters.</p>
+<p>In the next section we will show you an alternaive way to do this, which might be more
+convenient as it uses the language you commonly use to achieve the goal.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../code_adaptions/" class="btn btn-neutral float-left" title="Code Adaptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../submission_by_script/" class="btn btn-neutral float-right" title="Parallelize via a script" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

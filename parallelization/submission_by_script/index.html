@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallelize via a script &mdash; Real-life compute cluster workflows - Parallelization  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_lesson.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/term_role_formatting.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_rtd_theme_ext_color_contrast.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+
+  
+    <link rel="shortcut icon" href="../../_static/coderefinery.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script src="../../_static/minipres.js"></script>
+        <script src="../../_static/tabs.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+    <link rel="next" title="Conclusions and recommendations" href="../conclusions/" />
+    <link rel="prev" title="Parallelize using Slurm Array jobs" href="../array_jobs/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../" class="icon icon-home">
+            Real-life compute cluster workflows - Parallelization
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The lesson</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../motivation/">Motivation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../">Embarassingly Parallel Problems</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../motivation/">Motivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code_adaptions/">Code Adaptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../array_jobs/">Parallelize using Slurm Array jobs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Parallelize via a script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conclusions/">Conclusions and recommendations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../pitfalls/">Pitfalls when parallelising code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../conclusions/">Conclusions and recommendations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructor-guide/">Instructor’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exercises/">List of exercises</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../">Real-life compute cluster workflows - Parallelization</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../">Embarassingly Parallel Problems</a></li>
+      <li class="breadcrumb-item active">Parallelize via a script</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/coderefinery/content/blob/main/content/parallelization/submission_by_script.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parallelize-via-a-script">
+<h1>Parallelize via a script<a class="headerlink" href="#parallelize-via-a-script" title="Permalink to this heading"></a></h1>
+<p>We have now seen how to parallelize code using array jobs. This is convenient, if you have
+a situation, where your script just walks over some integer values (or indices in an array)
+and you can just use the index provided by the slurm array as input index to your script.
+Often however, this is not possible, as we want to e.g. scan a (non-integer) space of parameters or need textual input parameters.</p>
+<p>This could be achieved, by e.g. adding the values of the parameters to the script and reference them by index.</p>
+<p>However, at the same time, we want our code to be re-usable and don’t want to put the
+actual values within our code base, since this would force us to always edit the code files
+of our project and will make it more likely that errors are introduced in the code itself.
+So an alternative approach to touching our code base is to create packages that can parse
+multiple or non integer input parameters.</p>
+<p>Here is a simple piece of code that combines a Name with a numbe rand writes it to a
+file with a given name, where all elements are given as command line arguments.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">outputfile</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">parameter1</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">parameter2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+
+<span class="c1"># Simple function to combine the string and float parameter</span>
+<span class="k">def</span> <span class="nf">long_function</span><span class="p">(</span><span class="n">string_parameter</span><span class="p">,</span> <span class="n">float_parameter</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">string_parameter</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">float_parameter</span><span class="si">}</span><span class="s2"> &quot;</span>
+
+
+<span class="c1"># calculate the result from the input parameters</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">long_function</span><span class="p">(</span><span class="n">parameter1</span><span class="p">,</span> <span class="n">parameter2</span><span class="p">)</span>
+
+<span class="c1"># print the result file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outputfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function to print name and number to the output file</span>
+<span class="n">scan_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">outputfile</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">Sys.sleep</span><span class="p">(</span><span class="m">60</span><span class="p">)</span>
+<span class="w">  </span><span class="c1"># Create the output string</span>
+<span class="w">  </span><span class="n">output_string</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">number</span><span class="p">)</span>
+
+<span class="w">  </span><span class="c1"># Open the output file for writing</span>
+<span class="w">  </span><span class="n">con</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">file</span><span class="p">(</span><span class="n">outputfile</span><span class="p">,</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;w&quot;</span><span class="p">)</span>
+
+<span class="w">  </span><span class="c1"># Write the output string to the file</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="n">output_string</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">con</span><span class="p">)</span>
+
+<span class="w">  </span><span class="c1"># Close the file connection</span>
+<span class="w">  </span><span class="nf">close</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Command line arguments</span>
+<span class="n">args</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">commandArgs</span><span class="p">(</span><span class="n">trailingOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># Check if there are enough command line arguments</span>
+<span class="c1"># Extract the arguments</span>
+<span class="n">outputfile</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="m">1</span><span class="p">]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="m">2</span><span class="p">]</span>
+<span class="n">number</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="m">3</span><span class="p">])</span>
+
+<span class="c1"># Call the function</span>
+<span class="nf">scan_data</span><span class="p">(</span><span class="n">outputfile</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">number</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lets say we want to run this with the following input parameter sets:</p>
+<ul class="simple">
+<li><p>File1, Joe, 1.23</p></li>
+<li><p>File2, Jane, 23.5</p></li>
+<li><p>File3, Doe. 11.5</p></li>
+</ul>
+<p>we can do this in bash, but an easier way is to use the language we work in and build a general purpose submission script like this:</p>
+<div class="highlight-slurm notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="kp">#SBATCH --job-name=long_job</span>
+
+<span class="c1"># We assume, that python3 runs out of the box on your cluster, if not, you will have to</span>
+<span class="c1"># add a command here that makes the python3 command available on your cluster</span>
+
+<span class="c1"># Example command: replace with your actual command</span>
+python3<span class="w"> </span>scan_code.py<span class="w"> </span><span class="nv">$1</span><span class="w"> </span><span class="nv">$2</span><span class="w"> </span><span class="nv">$3</span>
+</pre></div>
+</div>
+<p>This submission script again takes three input parameters and runs the python script with
+these three input parameters. We can now build a small piece of code that stars our
+submissions:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="n">outfiles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;File1&quot;</span><span class="p">,</span> <span class="s2">&quot;File2&quot;</span><span class="p">,</span> <span class="s2">&quot;File3&quot;</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Joe&quot;</span><span class="p">,</span> <span class="s2">&quot;Jane&quot;</span><span class="p">,</span> <span class="s2">&quot;Doe&quot;</span><span class="p">]</span>
+<span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.23</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">,</span> <span class="mf">11.5</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;sbatch&quot;</span><span class="p">,</span> <span class="s2">&quot;submission.sh&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outfiles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">numbers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>You can run this code by running <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">submission.py</span></code> and it will submit the
+submission.sh file to the slurm scheduler for each of your options.</p>
+</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the inputs arrays</span>
+<span class="n">outfiles</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;File1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;File2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;File3&quot;</span><span class="p">)</span>
+<span class="n">names</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Jane&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">)</span>
+<span class="n">numbers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1.23</span><span class="p">,</span><span class="w"> </span><span class="m">23.5</span><span class="p">,</span><span class="w"> </span><span class="m">11.5</span><span class="p">)</span>
+
+<span class="c1"># Define a function to run the system command &quot;echo World&quot;</span>
+<span class="n">run_echo_world</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">for </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="nf">seq_along</span><span class="p">(</span><span class="n">outfiles</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1"># Extract elements at the current index from each array</span>
+<span class="w">    </span><span class="n">element1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">outfiles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="w">    </span><span class="n">element2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="w">    </span><span class="n">element3</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">numbers</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="w">    </span><span class="c1"># Build the command line</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;submission.sh&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">element1</span><span class="p">,</span><span class="w"> </span><span class="n">element2</span><span class="p">,</span><span class="w"> </span><span class="n">element3</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="p">)</span><span class="w">    </span>
+<span class="w">    </span><span class="nf">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="p">}</span>
+
+<span class="c1"># Call the function</span>
+<span class="nf">run_echo_world</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can run this code by running <code class="docutils literal notranslate"><span class="pre">Rscript</span> <span class="pre">submission.r</span></code> and it will submit the
+submission.sh file to the slurm scheduler for each of your options.</p>
+</div></div>
+<p>This way, we have separated the input parameters from the code itself.
+The main things you have to take care of when doing this are:</p>
+<ul class="simple">
+<li><p>Make sure, that no two output files have the same name. This is particularily important, if you determine the output file name not by an explicit provided file name but e.g. from the input parameters.</p></li>
+<li><p>Be careful when using floating numbers as input parameters, as the values actually supplied can be different (due to rounding and string representation) than the numbers you intend to be providing. This should be very small differences, but depending on your problem this can have a huge impact.</p></li>
+</ul>
+<p>You can of course also make more complex submission scripts using nested loops (e.g. if values depend on each other).</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../array_jobs/" class="btn btn-neutral float-left" title="Parallelize using Slurm Array jobs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../conclusions/" class="btn btn-neutral float-right" title="Conclusions and recommendations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
